@@ -4,7 +4,8 @@
       v-for="(movie, index) in movies" 
       :key="index" 
       :movie="movie" 
-      @onLike="handleLike"
+      @onToggle="$emit('onToggle', $event)"
+      @onRemove="$emit('onRemove', $event)"
     />
   </ul>
 </template>
@@ -22,12 +23,6 @@ export default {
       required: true
     }
   },
-  methods: {
-    handleLike(movieId) {
-      // Emit 'onLike' event with the movie ID
-      this.$emit('onLike', movieId);
-    }
-  }
 };
 </script>
 

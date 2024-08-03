@@ -3,10 +3,10 @@
     <div class="content">
       <app-info-vue :allMoviesCount="movies.length" :favouriteMoviesCount="movies.filter(movie => movie.favourite).length" />
       <div class="search-panel">
-        <search-panel />
+        <search-panel :updateTermHandler="updateTermHandler"/>
         <app-filter-vue />
       </div>
-      <movie-list :movies="movies" @onLike="onLikeHandler" />
+      <movie-list :movies="onSearchHandler(movies, term)" @onToggle="onToggleHandler" @onRemove="onRemoveHandler"/>
       <movie-add-form @createMovie="createMovie" />
     </div>
   </div>
@@ -52,20 +52,35 @@ export default {
           id: 3,
         },
       ],
+      term: '',
     };
   },
   methods: {
     createMovie(item) {
       this.movies.push(item);
     },
-    onLikeHandler(id) {
-      const movieToUpdate = this.movies.find(movie => movie.id === id);
-      if (movieToUpdate) {
-        movieToUpdate.like = !movieToUpdate.like; 
+    onToggleHandler(id, prop) {
+    this.movies = this.movies.map(item => {
+      if (item.id == id) {
+        return {...item, [prop]: !item[prop]}
       }
-    },
+      return item
+    })
+   },
+   onRemoveHandler(id){
+    this.movies = this.movies.filter(c => c.id !== id)
+   },
+   onSearchHandler(arr, term){
+    if (term.length == 0) {
+      return arr
+    } 
+    return arr.filter(c => c.name.toLowerCase().indexOf(term) > -1)
+   },
+   updateTermHandler(term){
+     this.term = term
+   }
   },
-};
+}
 </script>
 
 
